@@ -20,7 +20,7 @@
 * @see addDevice
 */
 int sendFrame(const void* buf , int len ,
-int ethtype , const void* destmac , int id);
+uint16_t ethtype , const void* destmac , int id);
 /**
 * @brief Process a frame upon receiving it.
 *

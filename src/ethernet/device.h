@@ -13,6 +13,7 @@
 * @return A non-negative _device-ID_ on success , -1 on error.
 */
 int addDevice(const char* device);
+
 /**
 * Find a device added by ‘addDevice ‘.
 *
@@ -21,5 +22,17 @@ int addDevice(const char* device);
 * was found.
 */
 int findDevice(const char* device);
+
+/**
+ * Get the handle of a device by id.
+ * 
+ * @param id the id to look up.
+ * @return the pcap_t handle on success, NULL if fails.
+*/
+pcap_t *getDeviceHandle(int id);
+
+void ethernetDeviceInit(void);
+
+void showLocalInterfaces(void);
 
 #endif
