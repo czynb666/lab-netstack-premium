@@ -28,7 +28,7 @@ int addDevice(const char* device) {
 
   char error_buf[PCAP_ERRBUF_SIZE] = {0};
 
-  pcap_t *handle = pcap_open_live(device, 0, 0, TIMEOUT, error_buf);
+  pcap_t *handle = pcap_open_live(device, SNAPLEN, 1, TIMEOUT, error_buf);
 
   if (handle == NULL) {
     printf("%s\n", error_buf);
@@ -61,6 +61,20 @@ int findDevice(const char* device) {
       return tmp->id;
   }
   return -1;
+}
+
+/**
+ * Get the name of a device by id.
+ * 
+ * @param id the id to look up.
+ * @return the name on success, NULL if fails.
+*/
+char *getDeviceName(int id) {
+  for (ListNode *tmp = head; tmp != NULL; tmp = tmp->next) {
+    if (tmp->id == id)
+      return tmp->name;
+  }
+  return NULL;
 }
 
 /**

@@ -31,6 +31,8 @@ int findDevice(const char* device);
 */
 pcap_t *getDeviceHandle(int id);
 
+char *getDeviceName(int id);
+
 void ethernetDeviceInit(void);
 
 void showLocalInterfaces(void);

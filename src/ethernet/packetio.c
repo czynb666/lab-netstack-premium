@@ -4,6 +4,7 @@
 
 #include <sys/ioctl.h>
 #include <net/if.h>
+#include <netinet/if_ether.h>
 
 #include <pcap.h>
 
@@ -60,11 +61,11 @@ int sendFrame(const void* buf, int len, uint16_t ethtype, const void* destmac, i
   memcpy(frame + 12, &ethtype, sizeof(uint16_t));
   memcpy(frame + 14, buf, sizeof(uint8_t) * len);
 
-  printf("sending: total_length = %d\n", total_length);
-  for (int i = 0; i < total_length; i++) {
-    printf("0x%x ", frame[i]);
-  }
-  puts("");
+  // printf("sending: total_length = %d\n", total_length);
+  // for (int i = 0; i < total_length; i++) {
+  //   printf("0x%x ", frame[i]);
+  // }
+  // puts("");
 
   if (pcap_sendpacket(handle, frame, total_length) != 0) {
     pcap_perror(handle, 0);
@@ -75,12 +76,15 @@ int sendFrame(const void* buf, int len, uint16_t ethtype, const void* destmac, i
   return 0;
 }
 
-/**
-* @brief Register a callback function to be called each time an
-* Ethernet II frame was received.
-*
-* @param callback the callback function.
-* @return 0 on success , -1 on error.
-* @see frameReceiveCallback
-*/
-int setFrameReceiveCallback(frameReceiveCallback callback);
+
+
+void printFrameInfo(unsigned char *deviceName, const struct pcap_pkthdr *pkthdr, const unsigned char *packet) {
+  printf("%s receives a frame.\n", deviceName);
+
+  printf("dest mac: %02x:%02x:%02x:%02x:%02x:%02x\n", packet[0], packet[1], packet[2], 
+                                                        packet[3], packet[4], packet[5]);
+  printf("source mac: %02x:%02x:%02x:%02x:%02x:%02x\n", packet[6], packet[7], packet[8], 
+                                                      packet[9], packet[10], packet[11]);
+
+  printf("\n");                                                    
+}

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include <pcap.h>
 
@@ -15,16 +16,16 @@ int main() {
     printf("%s\n", error_buf);
     exit(-1);
   }
-
-  showLocalInterfaces();
-
+  
   int id = addDevice("eth0");
   printf("add eth0: %d\n", id);
-  printf("add haha:%d\n", addDevice("haha"));
+
 
   char str[] = "HelloWorld!";
   uint8_t destmac[6] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
-  printf("send frame: %d\n", sendFrame(str, strlen(str), 0x0800, destmac, id));
+  for (int i = 0; i < 5; i++) {
+    printf("send frame: %d\n", sendFrame(str, strlen(str), 0x0800, destmac, id));
+  }
 
   return 0;
 }

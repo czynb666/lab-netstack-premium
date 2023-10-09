@@ -43,4 +43,6 @@ typedef int (* frameReceiveCallback)(const void*, int , int);
 int setFrameReceiveCallback(frameReceiveCallback callback);
 
 
+void printFrameInfo(unsigned char *deviceName, const struct pcap_pkthdr *pkthdr, const unsigned char *packet);
+
 #endif
