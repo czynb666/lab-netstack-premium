@@ -91,11 +91,9 @@ pcap_t *getDeviceHandle(int id) {
   return NULL;
 }
 
-void ethernetDeviceInit(void) {
-  total_id = 0;
-  head = NULL;
-}
-
+/**
+ * Detect local interfaces and print them.
+*/
 void showLocalInterfaces(void) {
   pcap_if_t *devs;
   char error_buf[PCAP_ERRBUF_SIZE] = {0};

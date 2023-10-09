@@ -31,10 +31,17 @@ int findDevice(const char* device);
 */
 pcap_t *getDeviceHandle(int id);
 
+/**
+ * Get the name of a device by id.
+ * 
+ * @param id the id to look up.
+ * @return the name on success, NULL if fails.
+*/
 char *getDeviceName(int id);
 
-void ethernetDeviceInit(void);
-
+/**
+ * Detect local interfaces and print them.
+*/
 void showLocalInterfaces(void);
 
 #endif

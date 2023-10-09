@@ -21,28 +21,14 @@
 */
 int sendFrame(const void* buf , int len ,
 uint16_t ethtype , const void* destmac , int id);
-/**
-* @brief Process a frame upon receiving it.
-*
-* @param buf Pointer to the frame.
-* @param len Length of the frame.
-* @param id ID of the device (returned by ‘addDevice ‘) receiving
-* current frame.
-* @return 0 on success , -1 on error.
-* @see addDevice
-*/
-typedef int (* frameReceiveCallback)(const void*, int , int);
-/**
-* @brief Register a callback function to be called each time an
-* Ethernet II frame was received.
-*
-* @param callback the callback function.
-* @return 0 on success , -1 on error.
-* @see frameReceiveCallback
-*/
-int setFrameReceiveCallback(frameReceiveCallback callback);
 
-
+/**
+ * A callback function to be used by pcap_loop() or pcap_next().
+ * 
+ * @param deviceName the name of the device that receives a frame.
+ * @param pkthdr the packet header of the frame.
+ * @param packet the pointer to the packet.
+*/
 void printFrameInfo(unsigned char *deviceName, const struct pcap_pkthdr *pkthdr, const unsigned char *packet);
 
 #endif

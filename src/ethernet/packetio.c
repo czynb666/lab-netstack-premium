@@ -77,7 +77,13 @@ int sendFrame(const void* buf, int len, uint16_t ethtype, const void* destmac, i
 }
 
 
-
+/**
+ * A callback function to be used by pcap_loop() or pcap_next().
+ * 
+ * @param deviceName the name of the device that receives a frame.
+ * @param pkthdr the packet header of the frame.
+ * @param packet the pointer to the packet.
+*/
 void printFrameInfo(unsigned char *deviceName, const struct pcap_pkthdr *pkthdr, const unsigned char *packet) {
   printf("%s receives a frame.\n", deviceName);
 
