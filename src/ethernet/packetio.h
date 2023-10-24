@@ -8,6 +8,8 @@
 
 #include <netinet/ether.h>
 
+#include "ip/arp.h"
+
 /**
 * @brief Encapsulate some data into an Ethernet II frame and send it.
 *
@@ -30,5 +32,7 @@ uint16_t ethtype , const void* destmac , int id);
  * @param packet the pointer to the packet.
 */
 void printFrameInfo(unsigned char *deviceName, const struct pcap_pkthdr *pkthdr, const unsigned char *packet);
+
+void processFrame(unsigned char *deviceName, const struct pcap_pkthdr *pkthdr, const unsigned char *packet);
 
 #endif

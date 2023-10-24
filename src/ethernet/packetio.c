@@ -8,6 +8,8 @@
 
 #include <pcap.h>
 
+#include <ip/ip.h>
+
 #include "device.h"
 #include "packetio.h"
 
@@ -26,13 +28,11 @@
 int sendFrame(const void* buf, int len, uint16_t ethtype, const void* destmac, int id) {
 
   pcap_t *handle = getDeviceHandle(id);
-
   if (handle == NULL) {
     return -1;
   }
 
   int total_length = len + 14;
-
   if (total_length > 1500) {
     return -1;
   }
@@ -46,16 +46,8 @@ int sendFrame(const void* buf, int len, uint16_t ethtype, const void* destmac, i
   // destmac, sourcemac, ethtype, payload
   memcpy(frame, destmac, sizeof(uint8_t) * 6);
 
-  struct ifreq ifr;
-  strcpy(ifr.ifr_name, "eth0");
-  int fd = socket(AF_INET, SOCK_DGRAM, 0);
-  if (fd == -1 || ioctl(fd, SIOCGIFHWADDR, &ifr) == -1) {
-    return -1;
-  }
-  
-  uint8_t* source_mac_addr = (uint8_t *)ifr.ifr_hwaddr.sa_data;
+  uint8_t* source_mac_addr = getLocalMAC(id);
   memcpy(frame + 6, source_mac_addr, sizeof(uint8_t) * 6);
-  close(fd);
 
   ethtype = htons(ethtype);
   memcpy(frame + 12, &ethtype, sizeof(uint16_t));
@@ -66,7 +58,6 @@ int sendFrame(const void* buf, int len, uint16_t ethtype, const void* destmac, i
   //   printf("0x%x ", frame[i]);
   // }
   // puts("");
-
   if (pcap_sendpacket(handle, frame, total_length) != 0) {
     pcap_perror(handle, 0);
     return -1;
@@ -93,4 +84,18 @@ void printFrameInfo(unsigned char *deviceName, const struct pcap_pkthdr *pkthdr,
                                                       packet[9], packet[10], packet[11]);
 
   printf("\n");                                                    
+}
+
+void processFrame(unsigned char *deviceName, const struct pcap_pkthdr *pkthdr, const unsigned char *packet) {
+  uint16_t protocol = (packet[12] << 8) + packet[13];
+  switch (protocol) {
+    case 0x0800:
+      processIPpacket(packet + 14, findDevice(deviceName));
+      break;
+    case 0x0806:
+      processARPpacket(packet + 14, findDevice(deviceName));
+      break;
+    default:
+      break;
+  }
 }

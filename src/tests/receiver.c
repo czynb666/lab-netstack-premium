@@ -19,25 +19,25 @@ int main() {
 
   showLocalInterfaces();
 
-  int id = addDevice("eth0");
-  printf("add eth0: %d\n", id);
+  // int id = addDevice("eth0");
+  // printf("add eth0: %d\n", id);
 
-  struct bpf_program bpf;
-  char filter[] = "ether dst ff:ff:ff:ff:ff:ff";
-  pcap_t *handle = getDeviceHandle(id);
-  bpf_u_int32 ip = 0;
+  // struct bpf_program bpf;
+  // char filter[] = "ether dst ff:ff:ff:ff:ff:ff";
+  // pcap_t *handle = getDeviceHandle(id);
+  // bpf_u_int32 ip = 0;
 
-  if (pcap_compile(handle, &bpf, filter, 0, 0) == -1) {
-    pcap_perror(handle, NULL);
-    exit(-1);
-  }
+  // if (pcap_compile(handle, &bpf, filter, 0, 0) == -1) {
+  //   pcap_perror(handle, NULL);
+  //   exit(-1);
+  // }
 
-  if (pcap_setfilter(handle, &bpf) == -1) {
-    pcap_perror(handle, NULL);
-    exit(-1);
-  }
+  // if (pcap_setfilter(handle, &bpf) == -1) {
+  //   pcap_perror(handle, NULL);
+  //   exit(-1);
+  // }
 
-  pcap_loop(getDeviceHandle(id), 10, &printFrameInfo, getDeviceName(id));
+  // pcap_loop(getDeviceHandle(id), 10, &printFrameInfo, getDeviceName(id));
   
   return 0;
 }

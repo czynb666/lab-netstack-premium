@@ -87,3 +87,21 @@ uint16_t ethtype , const void* destmac , int id);
 void printFrameInfo(unsigned char *deviceName, const struct pcap_pkthdr *pkthdr, const unsigned char *packet);
 ```
 
+### Checkpoint1, Checkpoint2
+
+``` bash
+make cp12; cd build;
+sudo ./receiver
+```
+
+then `sudo ./sender` in another terminal.
+
+The receiver first prints out the local interfaces(I mixed cp1 into cp2).
+
+![image-20231009190945732](C:\Users\23512\AppData\Roaming\Typora\typora-user-images\image-20231009190945732.png)
+
+Then the sender sends $5$ broadcast ethernet II frames, and the receiver waits for $10$ frames with filter "ether dst ff:ff:ff:ff:ff:ff", so we could see
+
+![image-20231009190810907](C:\Users\23512\AppData\Roaming\Typora\typora-user-images\image-20231009190810907.png)
+
+and if we run `sudo ./sender` once more the receiver turns off. It's likely that the receiver won't receive any other frames due to the filter "ether dst ff:ff:ff:ff:ff:ff".
