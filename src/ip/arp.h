@@ -17,6 +17,7 @@
 int getMACaddress(struct in_addr *target_ip, uint8_t *mac_address, int last_id);
 
 void sendARPrequest(struct in_addr *target_ip, int last_id);
+void sendARPreply(struct in_addr *dest_ip, uint8_t *dest_mac_address, uint8_t *source_mac_address, int last_id);
 
 void processARPrequest(const uint8_t *packet, int last_id);
 void processARPreply(const uint8_t *packet);

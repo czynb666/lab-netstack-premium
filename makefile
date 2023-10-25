@@ -12,11 +12,8 @@ TESTS_DIR = $(SRC_DIR)/tests
 OBJS = $(wildcard $(BUILD_DIR)/*.o) 
 
 cp12: init
-	$(CC) $(TESTS_DIR)/sender.c $(OBJS) -o $(BUILD_DIR)/sender $(CFLAGS)
-	$(CC) $(TESTS_DIR)/receiver.c $(OBJS) -o $(BUILD_DIR)/receiver $(CFLAGS)
+	$(CC) $(TESTS_DIR)/router.c $(OBJS) -o $(BUILD_DIR)/router $(CFLAGS)
 	$(CC) $(TESTS_DIR)/ns1.c $(OBJS) -o $(BUILD_DIR)/ns1 $(CFLAGS)
-	$(CC) $(TESTS_DIR)/ns2.c $(OBJS) -o $(BUILD_DIR)/ns2 $(CFLAGS)
-	$(CC) $(TESTS_DIR)/ns3.c $(OBJS) -o $(BUILD_DIR)/ns3 $(CFLAGS)
 
 init:
 	-mkdir build

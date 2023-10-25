@@ -55,20 +55,15 @@ int main() {
   }
 
   struct in_addr target_ip;
-  target_ip.s_addr = 0x0202640a;
+  target_ip.s_addr = 0x0203640a;
   
   char s[] = "Hello World!";
 
   while (1) {
     sendIPPacket(*getLocalIP(0), target_ip, 0xFD, s, 12, 64);  
-    sleep(1);
+    sleep(7);
   }
 
-  // pthread_
-
-  // sendRIPpacket();
-  // pcap_loop(getDeviceHandle(0), 1, &processFrame, getDeviceName(0));
-  // sendRIPpacket();
 
   return 0;
 }

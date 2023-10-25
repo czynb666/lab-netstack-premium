@@ -14,9 +14,9 @@ int sendIPPacket(const struct in_addr src, const struct in_addr dest, int proto,
   if (TTL == 0)
     return -1;
 
-  printf("send IP packet: src = %s, ", inet_ntoa(src));
-  printf("dest = %s, ", inet_ntoa(dest));
-  printf("proto = 0x%x, len = %d, TTL = %d\n", proto, len, TTL);
+  // printf("send IP packet: src = %s, ", inet_ntoa(src));
+  // printf("dest = %s, ", inet_ntoa(dest));
+  // printf("proto = 0x%x, len = %d, TTL = %d\n", proto, len, TTL);
   
   int deviceID = route(dest);
   if (deviceID == -1)
@@ -28,9 +28,9 @@ int sendIPPacket(const struct in_addr src, const struct in_addr dest, int proto,
   nextHopDeviceIP.s_addr = deviceIP.s_addr ^ 0x03000000;
 
 
-  printf("routed, deviceID = %d\n", deviceID);
-  printf("deviceIP = %s\n", inet_ntoa(deviceIP));
-  printf("nextHopDeviceIP = %s\n", inet_ntoa(nextHopDeviceIP));
+  // printf("routed, deviceID = %d\n", deviceID);
+  // printf("deviceIP = %s\n", inet_ntoa(deviceIP));
+  // printf("nextHopDeviceIP = %s\n", inet_ntoa(nextHopDeviceIP));
 
   uint8_t nextHopMAC[6];
   if (getMACaddress(&nextHopDeviceIP, nextHopMAC, -1) == -1)
@@ -115,17 +115,19 @@ void processIPpacket(const uint8_t *packet, int deviceID) {
     printf("src = %s\n", inet_ntoa(src_addr));
     printf("dest = %s\n", inet_ntoa(dest_addr));
 
+    int TTL = packet[8];
+
     // check if this is the dest
     for (int i = 0; getDeviceName(i) != NULL; i++) {
       if (getLocalIP(i)->s_addr == dest_addr.s_addr) {
-        printf("packet arrived\n");
+        printf("packet arrived, TTL = %d\n", TTL);
         return;
       }
     }
 
     // otherwise try to forward it
     // ECN or something else can be applied here I guess
-    int TTL = packet[8];
+    printf("forward packet, TTL = %d\n", TTL);
     sendIPPacket(src_addr, dest_addr, protocol, packet + headerLength, payloadLength, TTL - 1);
 
   }

@@ -14,7 +14,6 @@ typedef struct TrieNode {
 
   int hops;
   int attenuate_timer;
-  int fresh;
 
   int deviceID;
 

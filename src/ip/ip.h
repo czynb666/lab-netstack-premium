@@ -22,29 +22,6 @@ in an Ethernet II frame.
 int sendIPPacket(const struct in_addr src , const struct in_addr dest ,
 int proto , const void *buf , int len, int TTL);
 
-
-/**
-* @brief Process an IP packet upon receiving it.
-*
-* @param buf Pointer to the packet.
-* @param len Length of the packet.
-* @return 0 on success , -1 on error.
-* @see addDevice
-*/
-typedef int (* IPPacketReceiveCallback)(const void* buf , int len);
-
-
-/**
-* @brief Register a callback function to be called each time an IP
-packet was received.
-*
-* @param callback The callback function.
-* @return 0 on success , -1 on error.
-* @see IPPacketReceiveCallback
-*/
-int setIPPacketReceiveCallback(IPPacketReceiveCallback callback);
-
-
 void processARPpacket(const uint8_t *packet, int last_id);
 void processIPpacket(const uint8_t *packet, int deviceID);
 
