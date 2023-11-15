@@ -13,6 +13,12 @@
 #include "ip/arp.h"
 #include "ip/rip.h"
 
+#include "tcp.h"
+#include "connection.h"
+#include "netstack.h"
+
+int stack_set = 0;
+
 void *packet_capture(void *arg) {
   int i = *(int *)arg;
   pcap_loop(getDeviceHandle(i), -1, &processFrame, getDeviceName(i));
@@ -25,7 +31,8 @@ void *RIP_send(void *arg) {
   }
 }
 
-int main() {
+void setupNetStack() {
+  stack_set = 1;
 
   char error_buf[PCAP_BUF_SIZE] = {0};
   if (pcap_init(PCAP_CHAR_ENC_LOCAL, error_buf) != 0) {
@@ -33,8 +40,6 @@ int main() {
     exit(-1);
   }
 
-
-  showLocalInterfaces();
   addLocalInterfaces();
   initDVTrie();
 
@@ -54,16 +59,6 @@ int main() {
     exit(-1);
   }
 
-  struct in_addr target_ip;
-  target_ip.s_addr = 0x0203640a;
-  
-  char s[] = "Hello World!";
-
-  while (1) {
-    sendIPPacket(*getLocalIP(0), target_ip, 0xFD, s, 12, 64);  
-    sleep(7);
-  }
-
-
-  return 0;
+  tcpInit();
+  connectionInit();
 }

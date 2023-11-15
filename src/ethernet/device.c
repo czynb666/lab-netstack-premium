@@ -177,11 +177,11 @@ void addLocalInterfaces(void) {
 uint8_t *getLocalMAC(int id) {
   struct ifreq ifr;
   strcpy(ifr.ifr_name, getDeviceName(id));
-  int fd = socket(AF_INET, SOCK_DGRAM, 0);
+  int fd = __real_socket(AF_INET, SOCK_DGRAM, 0);
   ioctl(fd, SIOCGIFHWADDR, &ifr);
   uint8_t* mac_addr = malloc(sizeof(uint8_t) * 6);
   memcpy(mac_addr, ifr.ifr_hwaddr.sa_data, sizeof(uint8_t) * 6);
-  close(fd);
+  __real_close(fd);
   return mac_addr;
 }
 

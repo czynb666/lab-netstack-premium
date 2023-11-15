@@ -13,47 +13,12 @@
 #include "ip/arp.h"
 #include "ip/rip.h"
 
-void *packet_capture(void *arg) {
-  int i = *(int *)arg;
-  pcap_loop(getDeviceHandle(i), -1, &processFrame, getDeviceName(i));
-}
-
-void *RIP_send(void *arg) {
-  while (1) {
-    sendRIPpacket();
-    sleep(5);
-  }
-}
+#include "tcp/tcp.h"
+#include "tcp/connection.h"
 
 int main() {
 
-  char error_buf[PCAP_BUF_SIZE] = {0};
-  if (pcap_init(PCAP_CHAR_ENC_LOCAL, error_buf) != 0) {
-    printf("%s\n", error_buf);
-    exit(-1);
-  }
-
-
-  showLocalInterfaces();
-  addLocalInterfaces();
-  initDVTrie();
-
-  pthread_t capture_thread[5];
-  int args[5];
-  
-  for (int i = 0; getDeviceName(i) != NULL; i++) {
-    args[i] = i;
-    if (pthread_create(&capture_thread[i], NULL, packet_capture, &args[i]) != 0) {
-      exit(-1);
-    }
-  }
-
-  pthread_t RIP_thread;
-
-  if (pthread_create(&RIP_thread, NULL, RIP_send, NULL) != 0) {
-    exit(-1);
-  }
-  
+  setupNetStack();
   while (1) {}
 
   return 0;

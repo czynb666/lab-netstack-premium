@@ -5,6 +5,8 @@
 #include "ethernet/device.h"
 #include "ethernet/packetio.h"
 
+#include "tcp/tcp.h"
+
 #include "rip.h"
 #include "arp.h"
 #include "ip.h"
@@ -82,7 +84,8 @@ int sendIPPacket(const struct in_addr src, const struct in_addr dest, int proto,
   // payload
   memcpy(packet + 20, buf, sizeof(uint8_t) * len);
 
-  sendFrame(packet, 20 + len, 0x0800, nextHopMAC, deviceID);
+  if (rand() % 30 > 0)
+    sendFrame(packet, 20 + len, 0x0800, nextHopMAC, deviceID);
 
   return 0;
 }
@@ -105,29 +108,31 @@ void processIPpacket(const uint8_t *packet, int deviceID) {
   if (protocol == 0xFE) {// it is set on purpose, to make RIP not based on UDP.
     processRIPpacket(packet + headerLength, payloadLength, deviceID);
   }
-  if (protocol == 0xFD) {// our own IP packets.
+  if (protocol == 0xFD || protocol == 0x6) {// our own IP packets, or TCP segments
     struct in_addr src_addr;
     src_addr.s_addr = (packet[15] << 24) + (packet[14] << 16) + (packet[13] << 8) + packet[12];
 
     struct in_addr dest_addr;
     dest_addr.s_addr = (packet[19] << 24) + (packet[18] << 16) + (packet[17] << 8) + packet[16];
 
-    printf("src = %s\n", inet_ntoa(src_addr));
-    printf("dest = %s\n", inet_ntoa(dest_addr));
+    // printf("src = %s\n", inet_ntoa(src_addr));
+    // printf("dest = %s\n", inet_ntoa(dest_addr));
 
     int TTL = packet[8];
 
     // check if this is the dest
     for (int i = 0; getDeviceName(i) != NULL; i++) {
       if (getLocalIP(i)->s_addr == dest_addr.s_addr) {
-        printf("packet arrived, TTL = %d\n", TTL);
+        // printf("packet arrived, TTL = %d, headerLength = %d, payloadLength = %d\n", TTL, headerLength, payloadLength);
+        if (protocol == 0x6)
+          processTCPsegment(packet + headerLength, payloadLength, src_addr, dest_addr);
         return;
       }
     }
 
     // otherwise try to forward it
     // ECN or something else can be applied here I guess
-    printf("forward packet, TTL = %d\n", TTL);
+    // printf("forward packet, TTL = %d\n", TTL);
     sendIPPacket(src_addr, dest_addr, protocol, packet + headerLength, payloadLength, TTL - 1);
 
   }

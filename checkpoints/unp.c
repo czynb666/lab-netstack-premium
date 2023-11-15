@@ -66,6 +66,7 @@ readline(int fd, void* buff, size_t maxlen) {
   for (n = 1; n < maxlen; n++) {
     again:
       rc = read(fd, &c, 1);
+      // printf("n = %d, rc = %d\n", n, rc);
       if (rc == 1) {
         *ptr++ = c;
         if (c == '\n') {
